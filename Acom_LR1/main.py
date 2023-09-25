@@ -1,6 +1,6 @@
 import cv2
 
-image_path = r'C:\Users\Asus\Documents\GitHub\acom\Acom_LR1\media\w-brand.png'
+image_path = r'C:\Users\Asus\Documents\GitHub\acom\Acom_LR1\media\leaf.JPG'
 img1 = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 img2 = cv2.imread(image_path, cv2.IMREAD_LOAD_GDAL)
 img3 = cv2.imread(image_path, cv2.IMREAD_COLOR)
@@ -14,4 +14,4 @@ if img1 is not None:
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 else:
-        print(f"Не получилось открыть изображение в этом формате")
+    print(f"Не получилось открыть изображение в этом формате")

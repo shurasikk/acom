@@ -18,4 +18,3 @@ while True:
 # Освобождение памяти
 cap.release()
 cv2.destroyAllWindows()
-
