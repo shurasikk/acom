@@ -37,11 +37,11 @@ top_left_y = (height - rect_height) // 2
 bottom_right_x = top_left_x + rect_width
 bottom_right_y = top_left_y + rect_height
 if closest == "0":
-    cv2.rectangle(img, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (0, 0, 255), -1)
+    cv2.rectangle(img, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (255, 0, 0), -1)
 if closest == "1":
     cv2.rectangle(img, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (0, 255, 0), -1)
 if closest == "2":
-    cv2.rectangle(img, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (255, 0, 0), -1)
+    cv2.rectangle(img, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (0, 0, 255), -1)
 
 rect_width = 500
 rect_height = 100
@@ -51,11 +51,11 @@ top_left_y = (height - rect_height) // 2
 bottom_right_x = top_left_x + rect_width
 bottom_right_y = top_left_y + rect_height
 if closest == "0":
-    cv2.rectangle(img, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (0, 0, 255), -1)
+    cv2.rectangle(img, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (255, 0, 0), -1)
 if closest == "1":
     cv2.rectangle(img, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (0, 255, 0), -1)
 if closest == "2":
-    cv2.rectangle(img, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (255, 0, 0), -1)
+    cv2.rectangle(img, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (0, 0, 255), -1)
 
 cv2.namedWindow('image', cv2.WINDOW_NORMAL)  # Окно с изменяемым размером
 cv2.imshow('image', img)

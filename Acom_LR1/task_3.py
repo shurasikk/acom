@@ -23,7 +23,7 @@ while True:
     cv2.imshow("Video", frame)
 
     # Выход на q.
-    if cv2.waitKey(25) & 0xFF == ord('q'):
+    if cv2.waitKey(27) & 0xFF == ord('q'):
         break
 
 # Освобождение памяти
