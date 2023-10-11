@@ -20,7 +20,19 @@ while True:
 
     area = moments['m00']
 
+    if area > 0:
+        width = height = int(np.sqrt(area))
+        c_x = int(moments["m10"] / moments["m00"])
+        c_y = int(moments["m01"] / moments["m00"])
+        color = (0, 0, 0)
+        thickness = 1
+        cv2.rectangle(frame,
+            (c_x - (width // 10), c_y - (height // 10)),
+            (c_x + (width // 10), c_y + (height // 10)),
+            color, thickness)
+
     cv2.imshow('HSV_frame', hsv)
+    cv2.imshow('Result_frame', frame)
 
     # нажатие клавиши esc для выхода из цикла
     if cv2.waitKey(1) & 0xFF == 27:
