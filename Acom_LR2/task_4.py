@@ -25,10 +25,10 @@ while True:
         c_x = int(moments["m10"] / moments["m00"])
         c_y = int(moments["m01"] / moments["m00"])
         color = (0, 0, 0)
-        thickness = 1
+        thickness = 3
         cv2.rectangle(frame,
-            (c_x - (width // 10), c_y - (height // 10)),
-            (c_x + (width // 10), c_y + (height // 10)),
+            (c_x - (width // 15), c_y - (height // 15)),
+            (c_x + (width // 15), c_y + (height // 15)),
             color, thickness)
 
     cv2.imshow('HSV_frame', hsv)

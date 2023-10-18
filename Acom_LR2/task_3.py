@@ -15,7 +15,7 @@ while True:
     mask = cv2.inRange(hsv, min_red, max_red)
     res = cv2.bitwise_and(frame, frame, mask=mask)
 
-    kernel = np.ones((5, 5), np.uint8)
+    kernel = np.ones((10, 10), np.uint8)
     open = cv2.morphologyEx(res, cv2.MORPH_OPEN, kernel)
     close = cv2.morphologyEx(res, cv2.MORPH_CLOSE, kernel)
 
