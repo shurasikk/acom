@@ -20,16 +20,22 @@ while True:
 
     area = moments['m00']
 
-    if area > 0:
-        width = height = int(np.sqrt(area))
-        c_x = int(moments["m10"] / moments["m00"])
-        c_y = int(moments["m01"] / moments["m00"])
-        color = (0, 0, 0)
-        thickness = 3
-        cv2.rectangle(frame,
-            (c_x - (width // 15), c_y - (height // 15)),
-            (c_x + (width // 15), c_y + (height // 15)),
-            color, thickness)
+    _, thresh = cv2.threshold(mask, 127, 255, 0)
+
+    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if 5000 < area < 1000000:  # Фильтр по размеру контура
+            M = cv2.moments(contour)
+
+            if M["m00"] != 0:
+                cx = int(M["m10"] / M["m00"])
+                cy = int(M["m01"] / M["m00"])
+                color = (0,255,0)
+                thickness = 3
+                cv2.line(frame, (cx - 20, cy), (cx + 20, cy), color, thickness)
+                cv2.line(frame, (cx, cy - 20), (cx, cy + 20), color, thickness)
 
     cv2.imshow('HSV_frame', hsv)
     cv2.imshow('Result_frame', frame)

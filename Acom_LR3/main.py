@@ -1,16 +1,20 @@
-# This is a sample Python script.
+import numpy as np
+from scipy.ndimage import gaussian_filter
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+# Функция для создания и вывода матрицы свертки
+def create_and_print_gaussian_kernel(size, sigma):
+    kernel = gaussian_filter(np.zeros((size, size), dtype=np.float32), sigma)
+    print(f"Gaussian Kernel (Size: {size}, Sigma: {sigma}):")
+    print(kernel)
+    print()
+
+# Задаем размеры и сигмы для матриц свертки
+sizes = [3, 5, 7]
+sigmas = [1.0, 1.5, 2.0]
+
+# Создаем и выводим матрицы свертки
+for size in sizes:
+    for sigma in sigmas:
+        create_and_print_gaussian_kernel(size, sigma)
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
