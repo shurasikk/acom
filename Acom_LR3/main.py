@@ -1,86 +1,51 @@
+import math
 import cv2
+
 import numpy as np
 
 
-def BlurFuss():
-    img = cv2.imread("leaf.JPG", cv2.IMREAD_GRAYSCALE)
+def gauss(x,y,sig,a,b):
+    e = np.exp(-((x-a)**2+(y-b)**2)/(2*(sig**2)))
+    return 1/(2*math.pi*sig**2)*e
 
-    #  размер ядра фильтра и стандартное отклонение
-    kernel_size = 5
-    standard_deviation = 100
-
-    imgBlur1 = GaussBlur(img, kernel_size, standard_deviation)
-    imgWithNoise1 = addGaussianNoise(imgBlur1, mean = 0, standard_deviation = 25)
-    cv2.imshow(str(kernel_size) + 'x' + str(kernel_size) + ' and deviation ' + str(standard_deviation), imgWithNoise1)
-
-    # другие параметры
-    kernel_size = 11
-    standard_deviation = 50
-
-    imgBlur2 = GaussBlur(img, kernel_size, standard_deviation)
-    imgWithNoise2 = addGaussianNoise(imgBlur2, mean = 0, standard_deviation = 10)
-    #cv2.imshow(str(kernel_size)+'x'+str(kernel_size) + ' and deviation ' + str(standard_deviation), imgWithNoise2)
-
-    imgBlurOpenCV = cv2.GaussianBlur(img, (kernel_size, kernel_size), standard_deviation)
-
-    cv2.imshow('img', img)
-    #cv2.imshow('OpenCV_blur', imgBlurOpenCV)
-    cv2.waitKey(0)
-
-def GaussBlur(img, kernel_size, standard_deviation):
-    kernel = np.ones((kernel_size, kernel_size))
-    a = b = (kernel_size + 1) // 2
-
-    # Строим матрицу свёртки
-    for i in range(kernel_size):
-        for j in range(kernel_size):
-            kernel[i, j] = gauss(i, j, standard_deviation, a, b)
-
+def gaussian_blur(img,size,d):
+    kernel = np.zeros((size,size))
+    a = b = (size+1)/2
+    for i in range(size):
+        for j in range(size):
+            kernel[i,j] = gauss(i,j,d,a,b)
     print(kernel)
-    print("//////////")
-    # нормализуем для сохранения яркости изображения
-    sum = 0
-    for i in range(kernel_size):
-        for j in range(kernel_size):
-            sum += kernel[i, j]
-
-    for i in range(kernel_size):
-        for j in range(kernel_size):
-            kernel[i, j] /= sum
-
+    sum = np.sum(kernel)
+    for i in range(size):
+        for j in range(size):
+            kernel[i,j]/=sum
     print(kernel)
-
-    # проходим через внутренние пиксели изображения и выполняем операцию свертки между изображением и ядром.
-    # Каждый пиксель изображения умножается на соответствующее значение в ядре, а затем суммируется
-    imgBlur = img.copy()
-    x_start = kernel_size // 2
-    y_start = kernel_size // 2
-    for i in range(x_start, imgBlur.shape[0] - x_start):
-        for j in range(y_start, imgBlur.shape[1] - y_start):
-            # операция свёртки
+    sum = np.sum(kernel)
+    print(sum)
+    copy = img.copy()
+    s = size//2
+    for i in range(s,copy.shape[0]-s):
+        for j in range(s,copy.shape[1]-s):
             val = 0
-            for k in range(-(kernel_size // 2), kernel_size // 2 + 1):
-                for l in range(-(kernel_size // 2), kernel_size // 2 + 1):
-                    val += img[i + k, j + l] * kernel[k + (kernel_size // 2), l + (kernel_size // 2)]
-            imgBlur[i, j] = val
+            for k in range(-s,s+1):
+                for l in range(-s,s+1):
+                    val+=img[i+k,j+l]*kernel[s+k,s+l]
+            copy[i,j] = val
+    return copy
 
-    return imgBlur
+def run():
+    img = cv2.imread('leaf.JPG',cv2.IMREAD_GRAYSCALE)
+    img = cv2.resize(img, (600,600))
 
-# коорд.пикселя, станд.откл, координаты центра ядра
-def gauss(x, y, omega, a, b):
-    omega2 = 2 * omega ** 2
+    cv2.imshow('original',img)
 
-    m1 = 1 / (np.pi * omega2)
-    m2 = np.exp(-((x-a) ** 2 + (y-b) ** 2) / omega2)
+    blur = gaussian_blur(img,3,2)
+    cv2.imshow('made blur',blur)
 
-    return m1 * m2
+    blur_opencv = cv2.GaussianBlur(img, (3,3),2)
+    cv2.imshow('opencv blur',blur_opencv)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
-def addGaussianNoise(image, mean = 0, standard_deviation = 25):
-    height, width = image.shape
 
-    gauss_noise = np.random.normal(mean, standard_deviation, (height, width))
-    noisy_image = np.clip(image + gauss_noise, 0, 255).astype(np.uint8)
-
-    return noisy_image
-
-BlurFuss()
+run()
