@@ -61,11 +61,11 @@ vector<vector<double>> gaussianBlur(vector<vector<double>>& img, int kernel_size
 }
 
 int main() {
-    vector<vector<double>> img = { {3.0, 4.0, 7.0, 1.0, 1.0},
-                                   {4.0, 16.0, 26.0, 16.0, 4.0},
-                                   {7.0, 26.0, 41.0, 26.0, 7.0},
-                                   {4.0, 13.0, 26.0, 17.0, 0.0},
-                                   {1.0, 4.0, 29.0, 4.0, 1.0} };
+    vector<vector<double>> img = { {0.0, 255.0, 0.0, 0.0, 0.0},
+                                   {0.0, 0.0, 0.0, 238.0, 0.0},
+                                   {0.0, 238.0, 240.0, 0.0, 0.0},
+                                   {0.0, 0.0, 0.0, 0.0, 255.0},
+                                   {0.0, 0.0, 0.0, 0.0, 0.0} };
 
     int kernel_size = 5;
     double standard_deviation = 3.0;
