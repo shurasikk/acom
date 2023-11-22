@@ -39,7 +39,7 @@ def run():
 
     cv2.imshow('original',img)
 
-    blur = gaussian_blur(img,3,2)
+    blur = gaussian_blur(img,5,3)
     cv2.imshow('made blur',blur)
 
     blur_opencv = cv2.GaussianBlur(img, (3,3),2)
