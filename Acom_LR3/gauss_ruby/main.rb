@@ -1,10 +1,7 @@
-require 'rmagick'
+require 'ruby-vips'
 
-# Загрузка изображения
-input_image = Magick::Image.read('input.jpg').first
+im = Vips::Image.new_from_file("C:/Users/Asus/Documents/GitHub/acom/Acom_LR3/leaf.jpg")
 
-# Применение размытия Гаусса
-blurred_image = input_image.gaussian_blur(0, 10)
+im = im.gaussblur(4.0)
 
-# Сохранение размытого изображения
-blurred_image.write('output.jpg')
+im.write_to_file("C:/Users/Asus/Documents/GitHub/acom/Acom_LR3/blurleaf.jpg")
