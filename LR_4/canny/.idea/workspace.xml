@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68ff927f-a5e3-4dde-8639-d87ce81d36be" name="Changes" comment="" />
+    <list default="true" id="10749278-1a13-4b48-ace0-c142007b0408" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,7 +13,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Ruby Class" />
+        <option value="Ruby File" />
       </list>
     </option>
   </component>
@@ -23,7 +23,7 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectId" id="2XtEw01CoRfIZlHYxzKurTWpO8Z" />
+  <component name="ProjectId" id="2Yqabjebdakh5P2N9ukqtBFujkn" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -41,7 +41,6 @@
     "nodejs_package_manager_path": "npm",
     "ruby.rails.projectView.checked": "true",
     "ruby.structure.view.model.defaults.configured": "true",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -49,16 +48,12 @@
   <component name="SpringUtil" SPRING_PRE_LOADER_OPTION="true" RAKE_SPRING_PRE_LOADER_OPTION="true" RAILS_SPRING_PRE_LOADER_OPTION="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="68ff927f-a5e3-4dde-8639-d87ce81d36be" name="Changes" comment="" />
-      <created>1699440211235</created>
+      <changelist id="10749278-1a13-4b48-ace0-c142007b0408" name="Changes" comment="" />
+      <created>1701255637471</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1699440211235</updated>
-      <workItem from="1699440212504" duration="846000" />
-      <workItem from="1700038206212" duration="596000" />
-      <workItem from="1700738370006" duration="6090000" />
-      <workItem from="1701255467166" duration="104000" />
-      <workItem from="1701256569836" duration="19000" />
+      <updated>1701255637471</updated>
+      <workItem from="1701255638594" duration="8655000" />
     </task>
     <servers />
   </component>
@@ -66,6 +61,6 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/gauss_ruby@main.rcov" NAME="main Coverage Results" MODIFIED="1700743709336" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="gauss_ruby" />
+    <SUITE FILE_PATH="coverage/canny@canny.rcov" NAME="canny Coverage Results" MODIFIED="1701265609886" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="canny" />
   </component>
 </project>

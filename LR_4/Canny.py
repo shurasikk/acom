@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+# свёртка
 def Convolution(img, kernel):
     kernel_size = len(kernel)
     x_start = kernel_size // 2
@@ -60,12 +61,12 @@ def main(path, standard_deviation, kernel_size, bound_path):
     global i
     i += 1
 
-    # Задание 1 - чтение строки полного адреса изображения и размытие Гаусса
+    # размытие Гаусса
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    cv2.imshow("Original", img)
     imgBlur_CV2 = cv2.GaussianBlur(img, (kernel_size, kernel_size), standard_deviation)
     cv2.imshow('Blur_Imagine', imgBlur_CV2)
 
-    # Задание 2 - вычисление и вывод матрицы значений длин и матрицы значений углов градиентов
     # задание матриц оператора Собеля
     Gx = [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]
     Gy = [[-1, -2, -1], [0, 0, 0], [1, 2, 1]]
@@ -98,7 +99,7 @@ def main(path, standard_deviation, kernel_size, bound_path):
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
             img_gradient_to_print[i][j] = (float(matr_gradient[i][j]) / max_gradient) * 255 # необходимо для корректного отображения на экране
-    cv2.imshow('Matrix_gradient ' + str(i), img_gradient_to_print)
+    #cv2.imshow('Matrix_gradient ' + str(i), img_gradient_to_print)
     print('Матрица значений длин градиента:')
     print(img_gradient_to_print)
 
@@ -107,7 +108,7 @@ def main(path, standard_deviation, kernel_size, bound_path):
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
             img_angles_to_print[i][j] = img_angles[i][j] / 7 * 255 # необходимо для корректного отображения на экране
-    cv2.imshow('Matrix_angles ' + str(i), img_angles_to_print)
+    #cv2.imshow('Matrix_angles ' + str(i), img_angles_to_print)
     print('Матрица значений углов градиента:')
     print(img_angles_to_print)
 
@@ -144,7 +145,6 @@ def main(path, standard_deviation, kernel_size, bound_path):
 
     lower_bound = max_gradient / bound_path
     upper_bound = max_gradient - max_gradient / bound_path
-    # инициализация массива результата
     double_filtration = np.zeros(img.shape)
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
