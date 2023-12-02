@@ -86,6 +86,16 @@ def main(path, standard_deviation, kernel_size, bound_path):
         for j in range(img.shape[1]):
             matr_gradient[i][j] = np.sqrt(img_Gx[i][j] ** 2 + img_Gy[i][j] ** 2)
 
+    s=0
+
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            s+=matr_gradient[i][j]
+
+    for i in range(matr_gradient.shape[0]):
+        for j in range(matr_gradient.shape[1]):
+            matr_gradient[i][j]/=s
+
     # нахождение матрицы значений углов градиента
     img_angles = img.copy()
     for i in range(img.shape[0]):
@@ -93,7 +103,7 @@ def main(path, standard_deviation, kernel_size, bound_path):
             img_angles[i][j] = get_angle_number(img_Gx[i][j], img_Gy[i][j])
 
     # вывод матрицы значений длин градиента
-    img_gradient_to_print = img.copy()
+    img_gradient_to_print = matr_gradient.copy()
     # поиск максимального значения длины градиента
     max_gradient = np.max(matr_gradient)
     for i in range(img.shape[0]):
@@ -173,6 +183,6 @@ def main(path, standard_deviation, kernel_size, bound_path):
     cv2.waitKey(0)
 
 
-main('album.png',3,3, 3)
+main('album.png',3,3, 5)
 #main('album.png', 6, 5, 10)
 #main('album.png', 100, 9, 15)
