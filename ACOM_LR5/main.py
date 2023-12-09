@@ -15,7 +15,7 @@ def detect(kernel_size, standard_deviation, delta_tresh, min_area):
     h = int(video.get(4))
 
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    video_writer = cv2.VideoWriter('output.mp4', fourcc, 25, (w, h))
+    video_writer = cv2.VideoWriter('output2.mp4', fourcc, 25, (w, h))
 
     while True:
         old_img = img.copy()
@@ -37,8 +37,8 @@ def detect(kernel_size, standard_deviation, delta_tresh, min_area):
     video_writer.release()
 
 
-kernel_size = 3
-standard_deviation = 50
-delta_tresh = 60
-min_area = 20
+kernel_size = 5
+standard_deviation = 30
+delta_tresh = 20
+min_area = 50
 detect(kernel_size, standard_deviation, delta_tresh, min_area)
