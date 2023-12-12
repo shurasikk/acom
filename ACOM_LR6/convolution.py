@@ -1,8 +1,12 @@
 import tensorflow as tf
 from keras import datasets, layers, models
 import time
+from torch.utils.tensorboard import SummaryWriter
+import numpy as np
 
 start_time = time.time()
+
+writer = SummaryWriter(log_dir='/ACOM_LR6/logs_2')
 
 # загрузка данных MNIST (первый кортеж - тренировочные изображения и метки, а второй - тестовые изображения и метки)
 (train_images, train_labels), (test_images, test_labels) = datasets.mnist.load_data()
@@ -38,13 +42,21 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 # # Добавление TensorBoard в модель
-tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir="C:\GitHub\ATSOM")
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir="C:/Users/Asus/Documents/GitHub/acom")
+
+
+images = train_images[:20].reshape(-1, 28, 28, 1)
+images = (images * 255).astype(np.uint8)
+writer.add_images('mnist_images', images, dataformats='NHWC')
+writer.close()
 
 # обучение модели на тренировочных данных
 history = model.fit(train_images, train_labels,
                     epochs=5,
                     validation_data=(test_images, test_labels),
                     callbacks=[tensorboard_callback])
+
+model.save("cnn_model.keras")
 
 print('==============================================================')
 # оценка потерь и точности модели
