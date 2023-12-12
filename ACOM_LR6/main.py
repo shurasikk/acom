@@ -53,6 +53,9 @@ history = model.fit(x_train, y_train,
 score = model.evaluate(x_test, y_test, verbose=0)
 print('Потери на тестовых данных:', score[0])
 print('Точность модели на тестовых данных:', score[1])
+accuracy = score[1]
+percent_correct = accuracy * 100
+print('Точность:', percent_correct)
 
 end_time = time.time()
 print('Затраченное время:', end_time - start_time)
