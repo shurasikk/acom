@@ -39,6 +39,6 @@ def detect(kernel_size, standard_deviation, delta_tresh, min_area):
 
 kernel_size = 5
 standard_deviation = 30
-delta_tresh = 20
+delta_tresh = 60
 min_area = 50
 detect(kernel_size, standard_deviation, delta_tresh, min_area)
