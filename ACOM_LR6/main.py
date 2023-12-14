@@ -64,6 +64,8 @@ history = model.fit(x_train, y_train,
                     # тестовые данные будут использоваться для проверки производительности модели во время обучения
                     callbacks=[tensorboard])
 
+model.save("cnn_model.keras")
+
 # оценка потерь и точности модели
 score = model.evaluate(x_test, y_test, verbose=0)
 print('Потери на тестовых данных:', score[0])

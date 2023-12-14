@@ -1,4 +1,5 @@
 import tensorflow as tf
+import keras
 from keras import datasets, layers, models
 import time
 from torch.utils.tensorboard import SummaryWriter
@@ -18,7 +19,6 @@ test_images = test_images / 255.0
 # изменение форму массивов из двумерных в четырехмерные, добавляя размерность канала
 train_images = train_images.reshape(train_images.shape[0], 28, 28, 1)
 test_images = test_images.reshape(test_images.shape[0], 28, 28, 1)
-
 # создание модели сверточной нейронной сети
 model = models.Sequential()
 # добавление первого слоя
@@ -38,11 +38,11 @@ model.add(layers.Dense(10))
 
 # настройка процесса обучения модели
 model.compile(optimizer='adam',
-              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
 # # Добавление TensorBoard в модель
-tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir="C:/Users/Asus/Documents/GitHub/acom")
+tensorboard_callback = keras.callbacks.TensorBoard(log_dir="C:/Users/Asus/Documents/GitHub/acom")
 
 
 images = train_images[:20].reshape(-1, 28, 28, 1)
