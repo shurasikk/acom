@@ -1,78 +1,63 @@
+# -*- coding: cp1251 -*-
 import keras
 from keras.datasets import mnist
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
-from keras.optimizers import RMSprop
-from keras.callbacks import TensorBoard
 import time
-from torch.utils.tensorboard import SummaryWriter
-import numpy as np
 
 start_time = time.time()
-writer = SummaryWriter(log_dir='/ACOM_LR6/logs_1')
 
-# Р·Р°РіСЂСѓР·РєР° РґР°РЅРЅС‹С… MNIST (РїРµСЂРІС‹Р№ РєРѕСЂС‚РµР¶ - С‚СЂРµРЅРёСЂРѕРІРѕС‡РЅС‹Рµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ Рё РјРµС‚РєРё, Р° РІС‚РѕСЂРѕР№ - С‚РµСЃС‚РѕРІС‹Рµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ Рё РјРµС‚РєРё)
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
-# РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РєР°Р¶РґРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ (С‚СЂРµРЅРёСЂРѕРІРѕС‡РЅС‹С… Рё С‚РµСЃС‚РѕРІС‹С…) РІ РѕРґРЅРѕРјРµСЂРЅС‹Р№ РјР°СЃСЃРёРІ
+
 x_train = x_train.reshape(60000, 784)
 x_test = x_test.reshape(10000, 784)
-# РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ С‚РёРїР° РґР°РЅРЅС‹С… С‚СЂРµРЅРёСЂРѕРІРѕС‡РЅС‹С… Рё С‚РµСЃС‚РѕРІС‹С… РёР·РѕР±СЂР°Р¶РµРЅРёР№ MNIST РёР· uint8 РІ float32
-x_train = x_train.astype('float32')
+
+x_train = x_train.astype('float32')  # из uint8
 x_test = x_test.astype('float32')
-# РЅРѕСЂРјР°Р»РёР·Р°С†РёСЏ Р·РЅР°С‡РµРЅРёР№ РїРёРєСЃРµР»РµР№ РёР·РѕР±СЂР°Р¶РµРЅРёР№ РІ РґРёР°РїР°Р·РѕРЅРµ РѕС‚ 0 РґРѕ 1
-x_train /= 255
+
+x_train /= 255  # нормализация пикселей
 x_test /= 255
 
-# РІ Р±Р°Р·Рµ РґР°РЅРЅС‹С… MNIST СЃРѕРґРµСЂР¶РёС‚СЃСЏ 10 РєР»Р°СЃСЃРѕРІ С†РёС„СЂ РѕС‚ 0 РґРѕ 9
 num_classes = 10
-# РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РјРµС‚РѕРє РІ РєР°С‚РµРіРѕСЂРёРё РґР»СЏ РєР°Р¶РґРѕРіРѕ С‚РёРїР° РґР°РЅРЅС‹С…
-y_train = keras.utils.to_categorical(y_train, num_classes)
+
+y_train = keras.utils.to_categorical(y_train, num_classes)  # метки -> бинарные векторы
 y_test = keras.utils.to_categorical(y_test, num_classes)
 
-# СЃРѕР·РґР°РЅРёРµ РЅРѕРІРѕР№ РјРѕРґРµР»Рё РјРЅРѕРіРѕСЃР»РѕР№РЅРѕРіРѕ РїРµСЂСЃРµРїС‚СЂРѕРЅР°
 model = Sequential()
-# РґРѕР±Р°РІР»РµРЅРёРµ РїРµСЂРІРѕРіРѕ СЃР»РѕСЏ
+
 model.add(Dense(512, activation='relu', input_shape=(784,)))
-# РјРµС‚РѕРґ СЂРµРіСѓР»СЏСЂРёР·Р°С†РёРё, РєРѕС‚РѕСЂС‹Р№ СЃР»СѓС‡Р°Р№РЅС‹Рј РѕР±СЂР°Р·РѕРј СѓРґР°Р»СЏРµС‚ РЅРµР№СЂРѕРЅС‹ РёР· СЃРµС‚Рё РІРѕ РІСЂРµРјСЏ РѕР±СѓС‡РµРЅРёСЏ РґР»СЏ РїСЂРµРґРѕС‚РІСЂР°С‰РµРЅРёСЏ РїРµСЂРµРѕР±СѓС‡РµРЅРёСЏ
 model.add(Dropout(0.2))
-# РґРѕР±Р°РІР»РµРЅРёРµ РІС‚РѕСЂРѕРіРѕ СЃР»РѕСЏ
+
 model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.2))
-# РґРѕР±Р°РІР»РµРЅРёРµ РІС‹С…РѕРґРЅРѕРіРѕ СЃР»РѕСЏ
-model.add(Dense(num_classes, activation='softmax'))
 
-# РљРѕРјРїРёР»СЏС†РёСЏ РјРѕРґРµР»Рё Рё РѕР±СѓС‡РµРЅРёРµ РµРµ РЅР° С‚СЂРµРЅРёСЂРѕРІРѕС‡РЅС‹С… РґР°РЅРЅС‹С…
-# РЅР°СЃС‚СЂРѕР№РєР° РїСЂРѕС†РµСЃСЃР° РѕР±СѓС‡РµРЅРёСЏ РјРѕРґРµР»Рё
-model.compile(loss='categorical_crossentropy',
-              optimizer=RMSprop(),
-              metrics=['accuracy'])
-tensorboard = TensorBoard(log_dir="C:\GitHub\ATSOM", histogram_freq=0,
-                          write_graph=True, write_images=False)
+model.add(Dense(num_classes, activation='softmax'))  # вектор значений -> вероятностное распределение
 
-# Р·Р°РїРёСЃСЊ РґР°РЅРЅС‹Рµ РёР·РѕР±СЂР°Р¶РµРЅРёР№ РІ С„Р°Р№Р»С‹ СЃРѕР±С‹С‚РёР№
-images = x_train[:20].reshape(-1, 28, 28, 1)
-images = (images * 255).astype(np.uint8)
-writer.add_images('mnist_images', images, dataformats='NHWC')
-writer.close()
+model.compile(loss='categorical_crossentropy',  # Используется для задачи многоклассовой классификации, где каждый пример принадлежит к одному из нескольких классов. Эта функция минимизирует кросс-энтропию между предсказанными вероятностями и фактическими классами.
+              optimizer='adam',                 # опр-т обновление весовых коэфф-ов модели в процессе обучения
+              metrics=['accuracy'])             # исп-ся для оценки производительности модели
 
-# РѕР±СѓС‡РµРЅРёРµ РјРѕРґРµР»Рё РЅР° С‚СЂРµРЅРёСЂРѕРІРѕС‡РЅС‹С… РґР°РЅРЅС‹С…
+# обучение
 history = model.fit(x_train, y_train,
-                    batch_size=128,  # СЂР°Р·РјРµСЂ РїР°РєРµС‚Р°
-                    epochs=15,  # РєРѕР»РёС‡РµСЃС‚РІРѕ СЌРїРѕС…
-                    verbose=1,  # РІС‹РІРѕРґ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РїРѕС‚РµСЂСЏС…, РјРµС‚СЂРёРєР°С… Рё РїСЂРѕРіСЂРµСЃСЃ-Р±Р°СЂ
-                    validation_data=(x_test, y_test),
-                    # С‚РµСЃС‚РѕРІС‹Рµ РґР°РЅРЅС‹Рµ Р±СѓРґСѓС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РґР»СЏ РїСЂРѕРІРµСЂРєРё РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЊРЅРѕСЃС‚Рё РјРѕРґРµР»Рё РІРѕ РІСЂРµРјСЏ РѕР±СѓС‡РµРЅРёСЏ
-                    callbacks=[tensorboard])
+                    batch_size=128,
+                    epochs=15,
+                    verbose=1,  # вывод информации о потерях, метриках и прогресс-бар
+                    validation_data=(x_test, y_test))  # тестовые данные, будут использоваться для проверки производительности модели во время обучения
 
-model.save("cnn_model.keras")
+model.save("multilayer_perceptron.keras")
 
-# РѕС†РµРЅРєР° РїРѕС‚РµСЂСЊ Рё С‚РѕС‡РЅРѕСЃС‚Рё РјРѕРґРµР»Рё
+print('==============================================================')
+
+# оценка потерь и точности модели
 score = model.evaluate(x_test, y_test, verbose=0)
-print('РџРѕС‚РµСЂРё РЅР° С‚РµСЃС‚РѕРІС‹С… РґР°РЅРЅС‹С…:', score[0])
-print('РўРѕС‡РЅРѕСЃС‚СЊ РјРѕРґРµР»Рё РЅР° С‚РµСЃС‚РѕРІС‹С… РґР°РЅРЅС‹С…:', score[1])
+print('Потери на тестовых данных:', score[0])
+print('Точность модели на тестовых данных:', score[1])
+
+# подсчёт процента корректной работы на тестовой базе
 accuracy = score[1]
 percent_correct = accuracy * 100
-print('РўРѕС‡РЅРѕСЃС‚СЊ:', percent_correct)
+print('Процент корректной работы:', percent_correct)
 
 end_time = time.time()
-print('Р—Р°С‚СЂР°С‡РµРЅРЅРѕРµ РІСЂРµРјСЏ:', end_time - start_time)
+
+print('Затраченное время:', end_time - start_time)

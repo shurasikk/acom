@@ -1,0 +1,30 @@
+# -*- coding: cp1251 -*-
+import cv2
+import numpy as np
+from keras.models import load_model
+
+# загрузка модели получившейс€ ранее свЄрточной нейронной сети
+model = load_model('cnn_model.keras')
+
+# загрузка тестируемого изображение в оттенках серого
+image_path = 'img/1.jpg'
+img_cv = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+
+# изменение размера изображени€ на 28x28 (аналогично размеру MNIST изображений)
+img_cv = cv2.resize(img_cv, (28, 28))
+# печать размера изображени€ (должен быть (28, 28))
+print('–азмер тестируемого изображени€:',img_cv.shape)
+# нормализаци€ изображени€
+image = img_cv / 255.0
+# перевод изображени€ в формат, ожидаемый моделью (1, 28, 28, 1)
+image = image.reshape(1, 28, 28, 1)
+
+# получение предсказани€ модели дл€ изображени€
+predictions = model.predict(image)
+# вывод предсказанных веро€тностей дл€ каждого класса цифр
+print(predictions)
+# получение индекса с максимальной веро€тностью, который представл€ет предсказанную цифру
+predicted_class = np.argmax(predictions)
+
+# вывод предсказанного класса(цифры)
+print(f"ѕредсказанна€ цифра: {predicted_class}")
