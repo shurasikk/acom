@@ -7,7 +7,7 @@ from keras.models import load_model
 model = load_model('cnn_model.keras')
 
 # загрузка тестируемого изображение в оттенках серого
-image_path = 'img/1.jpg'
+image_path = 'img/1_1.jpg'
 img_cv = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
 # изменение размера изображения на 28x28 (аналогично размеру MNIST изображений)

@@ -6,7 +6,7 @@ import numpy as np
 model = load_model("multilayer_perceptron.keras")
 
 # загрузка тестируемого изображение в оттенках серого
-image_path = "img/2.jpg"
+image_path = "img/1.jpg"
 img_cv = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
 # изменение размера изображения на 28x28 (аналогично размеру MNIST изображений)
