@@ -4,7 +4,7 @@ import time
 import easyocr
 import os
 import cv2
-import numpy as np
+import re
 from augmentation import augment
 import json
 class Recognition:
@@ -57,11 +57,12 @@ class Recognition:
 
         return full_match, error_percent
 
-    def start_recognition(self, rec_type, images_folder):
-        annotations = self.read_annotations(self.annotation_file)
+    def start_recognition(self, rec_type, images_folder, task_number=0):
+        annotations = self.read_annotations()
         results = []
         all_full=0
         general_error=0
+        os.makedirs("results_2", exist_ok=True)
         start_time = time.time()
 
         for annotation in annotations:
@@ -75,6 +76,9 @@ class Recognition:
                 recognized_text, elapsed_time = self.easyocr_recognition(image_path)
             else:
                 raise ValueError("Неподдерживаемый тип распознавания")
+
+            if task_number == 4:
+                recognized_text = self.postprocess_text(recognized_text)
 
             full_match, error = self.accuracy(expected_text, recognized_text)
 
@@ -90,7 +94,7 @@ class Recognition:
             all_full+=int(full_match)
             general_error+=error
 
-        result_file_path = f'results_1/{rec_type}.json'
+        result_file_path = f'results_2/{rec_type}.json'
         with open(result_file_path, 'w', encoding='utf-8') as result_file:
             json.dump(results, result_file, indent=4, ensure_ascii=False)
         end_time = time.time()
@@ -98,9 +102,16 @@ class Recognition:
         all_full/=len(annotations)
         mean_error = general_error/len(annotations)
         res_string = f"Метод разпознавания:{rec_type}\nПроцент полного совпадения:{all_full*100}%\nОбщая ошибка:{general_error}\nСреднее ошибки:{mean_error}%\nВремя распознования:{elapsed_time}\n--------------\n"
-        with open('results_1/general_results.txt','a',encoding='utf-8') as general:
+        with open('results_2/general_results.txt','a',encoding='utf-8') as general:
             general.write(res_string)
             general.close()
+
+    def postprocess_text(self, text):
+        regexp_text = re.sub(r'[^a-zA-Zа-яА-Я0-9.—,№!:\s-]', '', text)
+        regexp_text = regexp_text.strip()
+        regexp_text = regexp_text.replace('—', '-')
+        result_text = regexp_text.replace('\n', '')
+        return result_text
 
     def task_3(self, img_name):
         with open(self.additional_annotation, "r", encoding="utf-8") as f:
@@ -154,6 +165,7 @@ class Recognition:
             general.close()
 
 recognizer = Recognition()
+recognizer.start_recognition(rec_type='straight_recognition', images_folder='dataset_1',task_number=4)
 #recognizer.start_recognition(rec_type='straight_recognition', annotation_file='annotation.json', images_folder='dataset_1')
 #recognizer.start_recognition(rec_type='easyocr_recognition', annotation_file='annotation.json', images_folder='dataset_1')
-recognizer.task_3("new_year.jpg")
+#recognizer.task_3("new_year.jpg")
