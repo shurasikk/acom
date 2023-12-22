@@ -3,22 +3,23 @@ from PIL import Image
 import time
 import easyocr
 import os
-import cv2
-import re
-from augmentation import augment
 import json
+import cv2
+import numpy as np
+from augmentation import augment
+import re
 class Recognition:
 
-    def __init__(self, annotation_file='annotation.json', ):
+    def __init__(self,annotation_file='annotation.json',):
         self.annotation_file = annotation_file
         self.additional_annotation = 'for_task3.json'
 
     def read_annotations(self):
-        annotations = list()
-        with open(self.annotation_file, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            for row in data:
-                annotations.append(list(map(list, row.items()))[0])
+        annotations= list()
+        f = open(self.annotation_file)
+        data = json.load(f)
+        for row in data:
+            annotations.append(list(map(list, row.items()))[0])
         return annotations
 
     # def read_annotations(self, annotation_file):
@@ -28,7 +29,6 @@ class Recognition:
 
 
     def straight_recognition(self, img):
-        tess.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
         start_time = time.time()
         text = tess.image_to_string(img, lang='rus+eng')
         end_time = time.time()
@@ -57,12 +57,14 @@ class Recognition:
 
         return full_match, error_percent
 
-    def start_recognition(self, rec_type, images_folder, task_number=0):
+    def start_recognition(self, rec_type, images_folder,task_number=1):
         annotations = self.read_annotations()
         results = []
         all_full=0
         general_error=0
-        os.makedirs("results_2", exist_ok=True)
+        path_name = "results_"+str(task_number)
+
+        os.makedirs(path_name, exist_ok=True)
         start_time = time.time()
 
         for annotation in annotations:
@@ -77,9 +79,8 @@ class Recognition:
             else:
                 raise ValueError("Неподдерживаемый тип распознавания")
 
-            if task_number == 4:
+            if task_number ==4:
                 recognized_text = self.postprocess_text(recognized_text)
-
             full_match, error = self.accuracy(expected_text, recognized_text)
 
 
@@ -94,78 +95,137 @@ class Recognition:
             all_full+=int(full_match)
             general_error+=error
 
-        result_file_path = f'results_2/{rec_type}.json'
+        result_file_path = f'{path_name}/{rec_type}.json'
         with open(result_file_path, 'w', encoding='utf-8') as result_file:
             json.dump(results, result_file, indent=4, ensure_ascii=False)
         end_time = time.time()
         elapsed_time = end_time - start_time
         all_full/=len(annotations)
         mean_error = general_error/len(annotations)
-        res_string = f"Метод разпознавания:{rec_type}\nПроцент полного совпадения:{all_full*100}%\nОбщая ошибка:{general_error}\nСреднее ошибки:{mean_error}%\nВремя распознования:{elapsed_time}\n--------------\n"
-        with open('results_2/general_results.txt','a',encoding='utf-8') as general:
+        res_string = f"Метод распознавания:{rec_type}\nПроцент полного совпадения:{all_full*100}%\nОбщая ошибка:{general_error}\nСреднее ошибки:{mean_error}%\nВремя распознования:{elapsed_time}\n--------------\n"
+        with open(path_name+'/general_results.txt','a',encoding='utf-8') as general:
             general.write(res_string)
             general.close()
 
     def postprocess_text(self, text):
-        regexp_text = re.sub(r'[^a-zA-Zа-яА-Я0-9.—,№!:\s-]', '', text)
+        regexp_text = re.sub(r'[^a-zA-Zа-яА-Я0-9.—,№:\s-]', '', text)
         regexp_text = regexp_text.strip()
-        regexp_text = regexp_text.replace('—', '-')
-        result_text = regexp_text.replace('\n', '')
+        regexp_text = regexp_text.replace('—','-')
+        result_text = regexp_text.replace('\n','')
         return result_text
 
-    def task_3(self, img_name):
+
+    def task_3(self,img_name):
+            f = open (self.additional_annotation, "r")
+
+            data = json.loads(f.read())
+            expected_text = data[img_name]
+            background_color=(255, 255, 255)
+            parent_folder = img_name[0:img_name.find('.')]+"_results"
+
+            if os.path.isdir(parent_folder):
+                os.system(f'rm -rf {parent_folder}')
+
+            images_folder = parent_folder+"/img"
+            os.makedirs(parent_folder, exist_ok=True)
+            os.makedirs(images_folder, exist_ok=True)
+            general_error = 0
+            general_full = 0
+            results = []
+            img = cv2.imread("dataset_1/"+img_name,cv2.IMREAD_ANYCOLOR)
+            start_time = time.time()
+
+            for angle in range(-20, 21, 1):
+                rotated_img = augment(img, angle, background_color)
+                recognized_text, elapsed_time = self.straight_recognition(img)
+                full_match, error = self.accuracy(expected_text, recognized_text)
+
+                output_name =  img_name[0:img_name.find('.')]+f'({angle})'+img_name[img_name.find('.'):]
+                results.append({
+                        'Имя файла': output_name,
+                        'Ожидаемый текст': expected_text,
+                        'Распознанный текст': recognized_text,
+                        'Полное совпадение': full_match,
+                        'Ошибка': error,
+                        'Время распознавания': elapsed_time
+                })
+
+                general_full+=int(full_match)
+                general_error+=error
+                output_path = f'{images_folder}/{output_name}'
+                cv2.imwrite(output_path, rotated_img)
+
+            result_file_path = parent_folder+'/tests.json'
+            with open(result_file_path, 'w', encoding='utf-8') as result_file:
+                    json.dump(results, result_file, indent=4, ensure_ascii=False)
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            general_full/=41
+            mean_error = general_error/41
+            res_string = f"--------------------------\nПроцент полного совпадения:{general_full*100}%\nОбщая ошибка:{general_error}\nСреднее ошибки:{mean_error}%\nВремя распознования:{elapsed_time}\n--------------------------\n"
+            with open(parent_folder+'/general_results.txt','a',encoding='utf-8') as general:
+                general.write(res_string)
+                general.close()
+            cv2.imshow("original",img)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
+
+
+    def task_8(self,dataset_folder):
         with open(self.additional_annotation, "r", encoding="utf-8") as f:
             data = json.loads(f.read())
-        expected_text = data[img_name]
-        background_color = (255, 255, 255)
-        parent_folder = img_name[0:img_name.find('.')] + "_results"
-
-        if os.path.isdir(parent_folder):
-            os.system(f'rm -rf {parent_folder}')
-
-        images_folder = parent_folder + "/img"
-        os.makedirs(parent_folder, exist_ok=True)
-        os.makedirs(images_folder, exist_ok=True)
-        general_error = 0
-        general_full = 0
         results = []
-        img = cv2.imread("dataset_1/" + img_name, cv2.IMREAD_ANYCOLOR)
-        start_time = time.time()
+        general_full = 0
+        general_error = 0
+        os.makedirs('results_8', exist_ok=True)
+        daughter_path = f'results_8/{dataset_folder}'
+        os.makedirs(daughter_path)
 
-        for angle in range(-20, 21, 1):
-            rotated_img = augment(img, angle, background_color)
-            recognized_text, elapsed_time = self.straight_recognition(img)
+        start_time = time.time()
+        for img_name in os.listdir(dataset_folder):
+            annotation_name = img_name
+            if re.search(r'\d', img_name):
+                head = ""
+                if img_name.count('_')!=1:
+                    splitted = img_name.split('_')
+                    head = splitted[0]+'_'+splitted[1]
+                else:
+                    head = img_name[0:img_name.find('_')]
+                tail = img_name[img_name.find('.'):]
+                annotation_name = head+tail
+            expected_text = data[annotation_name]
+            image_path = os.path.join(dataset_folder, img_name)
+            recognized_text, elapsed_time = self.easyocr_recognition(image_path)
+
             full_match, error = self.accuracy(expected_text, recognized_text)
 
-            output_name = img_name[0:img_name.find('.')] + f'({angle})' + img_name[img_name.find('.'):]
             results.append({
-                'Имя файла': output_name,
+                'Имя файла': img_name,
                 'Ожидаемый текст': expected_text,
                 'Распознанный текст': recognized_text,
                 'Полное совпадение': full_match,
                 'Ошибка': error,
                 'Время распознавания': elapsed_time
             })
+            general_full+=int(full_match)
+            general_error+=error
 
-            general_full += int(full_match)
-            general_error += error
-            output_path = f'{images_folder}/{output_name}'
-            cv2.imwrite(output_path, rotated_img)
-
-        result_file_path = parent_folder + '/tests.json'
+        result_file_path = f'{daughter_path}/partial_results.json'
         with open(result_file_path, 'w', encoding='utf-8') as result_file:
             json.dump(results, result_file, indent=4, ensure_ascii=False)
         end_time = time.time()
         elapsed_time = end_time - start_time
-        general_full /= 41
-        mean_error = general_error / 41
-        res_string = f"--------------------------\nПроцент полного совпадения:{general_full * 100}%\nОбщая ошибка:{general_error}\nСреднее ошибки:{mean_error}%\nВремя распознования:{elapsed_time}\n--------------------------\n"
-        with open(parent_folder + '/general_results.txt', 'a', encoding='utf-8') as general:
+        general_full/=len(os.listdir(dataset_folder))
+        mean_error = general_error/len(os.listdir(dataset_folder))
+        res_string = f"--------------------------\nПроцент полного совпадения:{general_full*100}%\nОбщая ошибка:{general_error}\nСреднее ошибки:{mean_error}%\nВремя распознования:{elapsed_time}\n--------------------------\n"
+        with open(f'{daughter_path}/general_results.txt','a',encoding='utf-8') as general:
             general.write(res_string)
             general.close()
 
+
+
 recognizer = Recognition()
-recognizer.start_recognition(rec_type='straight_recognition', images_folder='dataset_1',task_number=4)
-#recognizer.start_recognition(rec_type='straight_recognition', annotation_file='annotation.json', images_folder='dataset_1')
-#recognizer.start_recognition(rec_type='easyocr_recognition', annotation_file='annotation.json', images_folder='dataset_1')
-#recognizer.task_3("new_year.jpg")
+
+# recognizer.start_recognition(rec_type='straight_recognition', images_folder='dataset_1',task_number=5.2)
+# recognizer.start_recognition(rec_type='easyocr_recognition', annotation_file='annotation.json', images_folder='dataset_1')
+recognizer.task_8("dataset_2")

@@ -17,7 +17,7 @@ args = vars(ap.parse_args())
 detector = cv2.CascadeClassifier(args["cascade"])
 
 # time.sleep(2.0)
-PATH = "main.py"
+PATH = "output.mp4"
 vid = cv2.VideoCapture(PATH)
 
 
